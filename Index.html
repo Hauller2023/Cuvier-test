@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Cuves - Cave T</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+        }
+        .cuve {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: center;
+        }
+        .cuve input {
+            margin-right: 5px;
+        }
+        .contenance {
+            font-size: 0.8em;
+            color: #666;
+        }
+        .buttons {
+            margin-top: 20px;
+            text-align: center;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 0 10px;
+        }
+        #enregistrer {
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+        }
+        #reinitialiser {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Cuvier - Cave T</h1>
+    <div id="cuves" class="grid"></div>
+    <div class="buttons">
+        <button id="enregistrer">Enregistrer</button>
+        <button id="reinitialiser">Réinitialiser</button>
+    </div>
+
+    <script>
+        const cuvesContainer = document.getElementById('cuves');
+        const enregistrerBtn = document.getElementById('enregistrer');
+        const reinitialiserBtn = document.getElementById('reinitialiser');
+
+        const cuves = [
+            { id: 'T1', contenance: 202 }, { id: 'T2', contenance: 202 }, { id: 'T3', contenance: 202 },
+            { id: 'T4', contenance: 202 }, { id: 'T5', contenance: 202 }, { id: 'T6', contenance: 202 },
+            { id: 'T7', contenance: 202 }, { id: 'T8', contenance: 202 }, { id: 'T9', contenance: 202 },
+            { id: 'T10', contenance: 202 }, { id: 'T11', contenance: 202 }, { id: 'T12', contenance: 202 },
+            { id: 'T13', contenance: 250 }, { id: 'T14', contenance: 250 }, { id: 'T15', contenance: 250 },
+            { id: 'T16', contenance: 250 }, { id: 'T17', contenance: 250 }, { id: 'T18', contenance: 250 },
+            { id: 'T19', contenance: 250 }, { id: 'T20', contenance: 250 }, { id: 'T21', contenance: 250 },
+            { id: 'T22', contenance: 250 }, { id: 'T23', contenance: 250 }, { id: 'T24', contenance: 250 },
+            { id: 'T25', contenance: 460 }, { id: 'T26', contenance: 460 }, { id: 'T27', contenance: 460 },
+            { id: 'T28', contenance: 460 }, { id: 'T29', contenance: 460 }, { id: 'T30', contenance: 460 },
+            { id: 'T31', contenance: 460 }, { id: 'T32', contenance: 460 }, { id: 'T33', contenance: 460 },
+            { id: 'T34', contenance: 460 }, { id: 'T35', contenance: 460 }, { id: 'T36', contenance: 460 },
+            { id: 'T37', contenance: 460 }, { id: 'T38', contenance: 460 }, { id: 'T39', contenance: 460 },
+            { id: 'T40', contenance: 917 }, { id: 'T41', contenance: 917 }, { id: 'T42', contenance: 917 },
+            { id: 'T43', contenance: 917 }, { id: 'T44', contenance: 917 },
+            { id: 'T70', contenance: 152 }, { id: 'T71', contenance: 152 }, { id: 'T72', contenance: 152 },
+            { id: 'T73', contenance: 152 }, { id: 'T74', contenance: 152 }, { id: 'T75', contenance: 152 },
+            { id: 'T76', contenance: 152 }, { id: 'T77', contenance: 152 }, { id: 'T78', contenance: 152 },
+            { id: 'T79', contenance: 152 }, { id: 'T80', contenance: 152 }, { id: 'T81', contenance: 152 },
+            { id: 'T82', contenance: 152 }, { id: 'T83', contenance: 152 }, { id: 'T84', contenance: 152 },
+            { id: 'T90', contenance: 60 }, { id: 'T91', contenance: 60 }, { id: 'T92', contenance: 60 },
+            { id: 'T93', contenance: 60 }, { id: 'T94', contenance: 49 }, { id: 'T95', contenance: 49 },
+            { id: 'T96', contenance: 49 }, { id: 'T97', contenance: 0 },
+            { id: 'T98', contenance: 59 }, { id: 'T99', contenance: 59 }, { id: 'T104', contenance: 59 },
+            { id: 'T105', contenance: 59 }, { id: 'T106', contenance: 59 }, { id: 'T107', contenance: 30 },
+            { id: 'T108', contenance: 30 }, { id: 'T109', contenance: 30 },
+            { id: 'T100', contenance: 54 }, { id: 'T101', contenance: 54 }, { id: 'T102', contenance: 54 },
+            { id: 'T103', contenance: 54 }, { id: 'T110', contenance: 27 }, { id: 'T111', contenance: 27 }
+        ];
+
+        cuves.forEach(cuve => {
+            const cuveDiv = document.createElement('div');
+            cuveDiv.className = 'cuve';
+            cuveDiv.innerHTML = `
+                <input type="checkbox" id="${cuve.id}" name="${cuve.id}">
+                <label for="${cuve.id}">${cuve.id}</label>
+                <div class="contenance">${cuve.contenance} hl</div>
+            `;
+            cuvesContainer.appendChild(cuveDiv);
+        });
+
+        function enregistrer() {
+            const cuves = document.querySelectorAll('input[type="checkbox"]');
+            const etat = {};
+            cuves.forEach(cuve => {
+                etat[cuve.id] = cuve.checked;
+            });
+            localStorage.setItem('etatCuvesT', JSON.stringify(etat));
+            alert('État des cuves enregistré !');
+        }
+
+        function reinitialiser() {
+            if (confirm('Êtes-vous sûr de vouloir réinitialiser toutes les cases ?')) {
+                const cuves = document.querySelectorAll('input[type="checkbox"]');
+                cuves.forEach(cuve => {
+                    cuve.checked = false;
+                });
+            }
+        }
+
+        function chargerEtat() {
+            const etatSauvegarde = localStorage.getItem('etatCuvesT');
+            if (etatSauvegarde) {
+                const etat = JSON.parse(etatSauvegarde);
+                Object.keys(etat).forEach(id => {
+                    const cuve = document.getElementById(id);
+                    if (cuve) {
+                        cuve.checked = etat[id];
+                    }
+                });
+            }
+        }
+
+        enregistrerBtn.addEventListener('click', enregistrer);
+        reinitialiserBtn.addEventListener('click', reinitialiser);
+
+        chargerEtat();
+    </script>
+</body>
+</html>
